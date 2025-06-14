@@ -369,7 +369,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\GL_EditorFramework\Gl_EditorFramework\Gl_EditorFramework.csproj">
+    <ProjectReference Include="..\GL_EditorFramework\Gl_EditorFramework\Gl_EditorFramework.csproj">
       <Project>{d593a72d-554d-40fb-9967-503cb15a744f}</Project>
       <Name>Gl_EditorFramework</Name>
       <Private>True</Private>

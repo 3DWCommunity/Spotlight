@@ -14,14 +14,9 @@ A full guide to Spotlight can be found on the [Spotlight Wiki](https://github.co
 
 ## Compiling from Source
 
-To compile Spotlight you will need to download it to a folder also containing the <a href="https://github.com/jupahe64/GL_EditorFramework">GL_EditorFramework</a><br/> repository.
-The folder layout should look like this:<br/>
-<br/>
-![image](https://user-images.githubusercontent.com/44330283/76013595-05647e00-5ecd-11ea-8c04-0752df56e593.png)
-<br/>
-These folders must contain their respective project repositories.
-(make sure to get rid of the -master in the end when downloading both)<br/>
-After that it should be ready to go.
+To compile Spotlight you will need to clone the repo recursively and open it with visual studio. 
+
+When you compile make sure you copy the Shaders folder from the repo to your build directory.
 
 # Join Us
 If you need help with the program or editing the game, you can Join the 3D World Modding Community (<a href="https://discord.gg/hBBk6WuQsz">Discord</a>). You can talk to other SM3DW hackers here as well as show your own hacking accomplishments.<br/>(*Dislaimer: We cannot help you get the 3D World files*)
