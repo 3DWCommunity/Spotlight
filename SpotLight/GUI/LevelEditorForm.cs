@@ -707,6 +707,77 @@ namespace Spotlight
             MainSceneListView.Refresh();
         }
 
+        private void createViewGroupToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentScene == null)
+                return;
+
+            int SelectedObjectCount = 0;
+            Vector3 AveragePosition = new Vector3(0,0,0);
+            int MaxObjID = 0;
+            
+
+            //Get selected objects, and check what the highest viewgroup ID is
+            General3dWorldObject CheckedObject;
+            List<I3dWorldObject> selectedObjects = new List<I3dWorldObject>();
+            foreach (I3dWorldObject obj in currentScene.Objects)
+            {
+                if (obj is General3dWorldObject)
+                {
+                    CheckedObject = (General3dWorldObject)obj;
+                    if (obj.IsSelectedAll())
+                    {
+                        
+
+                        selectedObjects.Add(obj);
+                        AveragePosition *= (float)SelectedObjectCount;
+                        AveragePosition += CheckedObject.Position;
+                        SelectedObjectCount++;
+                        AveragePosition /= (float)SelectedObjectCount;
+                    }
+
+                    if (CheckedObject.ID.StartsWith("vgrp"))
+                    {
+                        try
+                        {
+                            int thisID = Convert.ToInt32(CheckedObject.ID.Replace("vgrp",""));
+                            if (thisID >= MaxObjID) MaxObjID = thisID + 1;
+                        }
+                        catch { }
+                    }
+                }
+            }
+
+
+            //Create GroupView object
+            SM3DWorldZone zone = currentScene.EditZone;
+            LevelIO.ObjectInfo objectInfo = new LevelIO.ObjectInfo();
+            objectInfo.PropertyEntries = new Dictionary<string, ByamlIterator.DictionaryEntry>();
+            objectInfo.ID = "vgrp" + MaxObjID.ToString();
+            objectInfo.Layer = "Common";
+            objectInfo.ClassName = "GroupView";
+            objectInfo.ObjectName = "GroupView";
+            objectInfo.Scale = new Vector3(1, 1, 1);
+            objectInfo.Position = AveragePosition + new Vector3(0,1,0);
+
+            General3dWorldObject ViewGroup = new General3dWorldObject(objectInfo, zone, out bool _LL);
+
+            zone.LinkedObjects.Add(ViewGroup);
+
+            //Create Links
+            foreach (I3dWorldObject selObj in selectedObjects)
+            {
+                if (selObj.Links == null) selObj.Links = new Dictionary<string, List<I3dWorldObject>>();
+                if (selObj.Links.ContainsKey("ViewGroup")) selObj.Links["ViewGroup"].Add(ViewGroup);
+                else selObj.Links["ViewGroup"] = new List<I3dWorldObject> { ViewGroup };
+
+                ViewGroup.AddLinkDestination("ViewGroup", selObj);
+            }
+
+            
+
+        }
+
         private void GrowSelectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             currentScene?.GrowSelection();
@@ -1534,5 +1605,7 @@ Would you like to rebuild the database from your 3DW Files?";
             Program.SetRestartForm(new LevelEditorForm(tabs, selected, QuickFavoriteControl.Favorites.ToArray()));
             Close();
         }
+
+        
     }
 }
