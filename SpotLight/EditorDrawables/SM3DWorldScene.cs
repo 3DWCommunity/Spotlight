@@ -18,6 +18,7 @@ using System.Windows.Forms;
 using SZS;
 using WinInput = System.Windows.Input;
 using GL_EditorFramework;
+using Syroot.BinaryData;
 
 namespace Spotlight.EditorDrawables
 {
@@ -1332,11 +1333,18 @@ namespace Spotlight.EditorDrawables
             {
                 SaveFileDialog sfd = new SaveFileDialog()
                 {
+#if ODYSSEY
+                    Filter = 
+                    "Super Mario Odyssey|Map.szs",
+#else
                     Filter =
-                    "Level Files (Map)|*Map1.szs|" +
-                    "Level Files (Design)|*Design1.szs|" +
-                    "Level Files (Sound)|*Sound1.szs|" +
-                    "All Level Files|*.szs",
+                    "3D World Wii U|*Map1.szs|" +
+                    "3D World Switch|*.szs|" +
+                    "Treasure Tracker Wii U|*Map1.szs|" +
+                    "Treasure Tracker 1.0 Switch|*Map1.szs|" +
+                    "Treasure Tracker 1.1+ Switch|*.szs",
+#endif
+
                     InitialDirectory = currentDirectory,
                     FileName = _zone.LevelFileName
                 };
@@ -1358,7 +1366,29 @@ namespace Spotlight.EditorDrawables
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
+#if ODYSSEY
                     _zone.Save(sfd.FileName);
+#else
+                    switch (sfd.FilterIndex)
+                    {
+                        case 1:
+                        case 3:
+                            _zone.Save(sfd.FileName,true,ByteOrder.BigEndian, false);
+                            break;
+                        case 2:
+                        case 5:
+                            _zone.Save(sfd.FileName, true, ByteOrder.LittleEndian, true);
+                            break;
+                        case 4:
+                            _zone.Save(sfd.FileName, true, ByteOrder.LittleEndian, true);
+                            break;
+                        default:
+                            _zone.Save(sfd.FileName);
+                            break;
+                    }
+#endif
+
+
                     currentDirectory = System.IO.Path.GetDirectoryName(sfd.FileName);
                 }
             }

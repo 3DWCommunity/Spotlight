@@ -608,7 +608,7 @@ namespace Spotlight.Level
         /// </summary>
         /// <param name="fileName">the file name to save the zone as</param>
         /// <returns>true if the save succeeded, false if it failed</returns>
-        public bool Save(string fileName)
+        public bool Save(string fileName, bool TypeOveride = false, ByteOrder Endieness = ByteOrder.LittleEndian, bool Combined = true)
         {
             string fileNameWithoutPath = Path.GetFileName(fileName);
 
@@ -630,6 +630,11 @@ namespace Spotlight.Level
             }
 
             Directory = Path.GetDirectoryName(fileName);
+            if (TypeOveride)
+            {
+                byteOrder = Endieness;
+                IsCombined = Combined;
+            }
 
             return Save();
         }
